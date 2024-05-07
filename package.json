@@ -8,6 +8,7 @@
     "dependencies": {
         "@sap/cds": "^7.9.0",
         "@sap/cds-hana": "^2",
+        "@sap/xssec": "^3.6.1",
         "expres": "^0.0.5",
         "express": "^4"
     },
@@ -24,7 +25,8 @@
         "watch-frontend": "cds watch --open frontend/webapp/index.html?sap-ui-xx-viewCache=false",
         "undeploy": "cf undeploy MyHANAApp --delete-services --delete-service-keys --delete-service-brokers",
         "build": "rimraf resources mta_archives && mbt build --mtar archive",
-        "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+        "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+        "watch-calculationview": "cds watch --open calculationview/webapp/index.html?sap-ui-xx-viewCache=false"
     },
     "cds": {
         "build": {
@@ -65,6 +67,7 @@
         }
     },
     "sapux": [
-        "app/frontend"
+        "app/frontend",
+        "app/calculationview"
     ]
 }

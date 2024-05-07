@@ -14,21 +14,23 @@ modules:
     properties:
       srv-url: ${default-url}
   parameters:
-    host: ${appname}
     buildpack: nodejs_buildpack
+    host: ${appname}
     readiness-health-check-http-endpoint: /health
     readiness-health-check-type: http
   build-parameters:
-    ignore: [".env1"]
     builder: npm
+    ignore:
+    - .env1
 - name: MyHANAApp-db-deployer
   type: hdb
   path: gen/db
   requires:
   - name: MyHANAApp-db
   parameters:
-    ignore: [".env1"]
     buildpack: nodejs_buildpack
+    ignore:
+    - .env1
 - name: MyHANAApp-destination-content
   type: com.sap.application.content
   requires:
@@ -73,9 +75,23 @@ modules:
       - frontend.zip
       name: frontend
       target-path: resources/
+    - artifacts:
+      - calculationview.zip
+      name: calculationview
+      target-path: resources/
 - name: frontend
   type: html5
   path: app/frontend
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: calculationview
+  type: html5
+  path: app/calculationview
   build-parameters:
     build-result: dist
     builder: custom
@@ -102,11 +118,11 @@ resources:
             ProxyType: Internet
             Type: HTTP
             URL: https://ui5.sap.com
-          - Name: hana-app-api
-            Authentication: NoAuthentication
-            ProxyType: Internet
-            HTML5.ForwardAuthToken: true
+          - Authentication: NoAuthentication
             HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: hana-app-api
+            ProxyType: Internet
             Type: HTTP
             URL: https://${appname}.${default-domain}
           existing_destinations_policy: update
